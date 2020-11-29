@@ -1,0 +1,35 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ac35a49..6d1857b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -20,7 +20,7 @@ include(clingo_functions)
+ # Enable folders in IDEs like Visual Studio
+ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+ 
+-set(CMAKE_CXX_STANDARD 14)
++set(CMAKE_CXX_STANDARD 11)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ set(CMAKE_CXX_EXTENSIONS OFF)
+ 
+diff --git a/INSTALL.md b/INSTALL.md
+index 8c983ff..a1cace6 100644
+--- a/INSTALL.md
++++ b/INSTALL.md
+@@ -14,7 +14,7 @@
+ 
+ # Requirements
+ 
+-- a c++14 conforming compiler
++- a c++11 conforming compiler
+   - *at least* [gcc](https://gcc.gnu.org/) version 4.9
+   - [clang](http://clang.llvm.org/) version 3.1 (using either libstdc++
+     provided by gcc 4.9 or libc++)
+@@ -78,7 +78,7 @@ Cmake's `-L` option can be used to get an overview over the variables that can
+ be set for building gringo/clingo. To get gringo/clingo specific options, run
+ 
+     cmake -H<SOURCE_DIR> -B<BUILD_DIR> -DCMAKE_BUILD_TYPE=Release -LH
+-    
++
+ or, to also print important cmake specific configuration variables
+ 
+     cmake -H<SOURCE_DIR> -B<BUILD_DIR> -DCMAKE_BUILD_TYPE=Release -LAH

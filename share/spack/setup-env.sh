@@ -303,12 +303,12 @@ _spack_pathadd PATH "${_sp_prefix%/}/bin"
 # Check whether a function of the given name is defined
 #
 _spack_fn_exists() {
-	LANG= type $1 2>&1 | grep -q 'function'
+        LANG= type $1 2>&1 | grep -q 'function'
 }
 
 need_module="no"
 if ! _spack_fn_exists use && ! _spack_fn_exists module; then
-	need_module="yes"
+        need_module="yes"
 fi;
 
 # Define the spack shell function with some informative no-ops, so when users
@@ -369,6 +369,8 @@ _sp_multi_pathadd() {
 }
 _sp_multi_pathadd MODULEPATH "$_sp_tcl_roots"
 
+
+#
 # Add programmable tab completion for Bash
 #
 if [ "$_sp_shell" = bash ]; then
@@ -378,3 +380,31 @@ fi
 # done: unset sentinel variable as we're no longer initializing
 unset _sp_initializing
 export _sp_initializing
+
+#
+# If $SPACK_CLINGO is set, ensure a bootstrapped clingo exists in the current environment.
+#
+_sp_defaults_dir="${_sp_prefix}/etc/spack/defaults"
+_sp_bootstrap_dir="${_sp_defaults_dir}/bootstrap"
+_sp_clingo_concretizer_dir="${_sp_defaults_dir}/clingo-concretizer"
+if [ -n "${SPACK_CLINGO:-}" ]; then
+    # $_sp_clingo_load_spec is the spec we try to find and load, and $_sp_clingo_install_spec is the
+    # one we try to install. This avoids having to rebuild clingo with +cxx11 if it's already been
+    # successfully installed without it.
+    _sp_clingo_load_spec='clingo@spack-v1+python'
+    _sp_clingo_install_spec='clingo@spack-v1+cxx11+python'
+    if ! spack find "$_sp_clingo_load_spec" >/dev/null; then
+      echo "==> Info: Spack is bootstrapping clingo for concretization"
+      echo "Installing spec '${_sp_clingo_spec}'..."
+      spack --config-scope "$_sp_bootstrap_dir" \
+            install --yes-to-all --show-log-on-error \
+            "$_sp_clingo_install_spec" \
+        || return 1
+    fi
+    spack load "$_sp_clingo_load_spec"
+    echo "==> Info: Setting config:concretizer = 'clingo' in user config!"
+    echo "Use the command:"
+    echo spack config --scope user rm config:concretizer
+    echo "to undo this setting."
+    spack config --scope user add -f "${_sp_clingo_concretizer_dir}/config.yaml"
+fi
