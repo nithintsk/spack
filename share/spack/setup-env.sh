@@ -393,6 +393,7 @@ if [ -n "${SPACK_CLINGO:-}" ]; then
     # successfully installed without it.
     _sp_clingo_load_spec='clingo@spack-v1+python'
     _sp_clingo_install_spec='clingo@spack-v1+cxx11+python'
+    # NB: There may be more than one result, but 'spack find' will still return 0.
     if ! spack find "$_sp_clingo_load_spec" >/dev/null; then
       echo "==> Info: Spack is bootstrapping clingo for concretization"
       echo "Installing spec '${_sp_clingo_spec}'..."
